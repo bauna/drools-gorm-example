@@ -1,26 +1,37 @@
 package drools.gorm.example
 
-import org.drools.SessionConfiguration
 import org.drools.KnowledgeBase
 import org.drools.KnowledgeBaseFactory
-import org.drools.builder.KnowledgeBuilderFactory
+import org.drools.SessionConfiguration
 import org.drools.builder.KnowledgeBuilder
+import org.drools.builder.KnowledgeBuilderFactory
+import org.drools.builder.ResourceType
+import org.drools.gorm.processinstance.GormProcessInstanceManagerFactory
+import org.drools.gorm.processinstance.GormSignalManagerFactory
+import org.drools.gorm.processinstance.GormWorkItemManagerFactory
+import org.drools.gorm.session.SingleSessionCommandService
+import org.drools.io.ResourceFactory
 import org.drools.runtime.Environment
 import org.drools.runtime.StatefulKnowledgeSession
 import org.jbpm.process.instance.ProcessInstance
-import org.drools.builder.ResourceType
-import org.drools.io.ResourceFactory
-import org.drools.gorm.processinstance.GormSignalManagerFactory
-import org.drools.gorm.session.SingleSessionCommandService
-import org.drools.gorm.processinstance.GormWorkItemManagerFactory
-import org.drools.gorm.processinstance.GormProcessInstanceManagerFactory;
 
+/**
+ * JBPM Service example class
+ */
 class JbpmService {
 
     static transactional = true
 
+    /** The kstore is automatically declared by the drools-gorm plugin */
     def kstore
 
+    /**
+     * Returns a SessionConfiguration containing Drools services
+     * implementations for Grails.
+     *
+     * @return a SessionConfiguration containing Drools services
+     * implementations for Grails.
+     */
     def getGORMSessionConfig() {
         Properties properties = new Properties();
 
@@ -36,6 +47,11 @@ class JbpmService {
         return new SessionConfiguration(properties);
     }
 
+    /**
+     * Construct a kbase with an example flow.
+     *
+     * @return a KnowledgeBase containing an example flow.
+     */
     def KnowledgeBase createKbase() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
@@ -50,6 +66,12 @@ class JbpmService {
         return kbuilder.newKnowledgeBase();
     }
 
+    /**
+     * Start the a process.
+     *
+     * @param processId  the process id to start.
+     * @return the id of the process instance.
+     */
     def startProcess(String processId) {
 
         Environment env = KnowledgeBaseFactory.newEnvironment()
